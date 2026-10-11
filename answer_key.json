@@ -1,0 +1,205 @@
+{
+  "evaluation_only": "Do not expose this file to the agent, its tools, or its prompts.",
+  "evaluation_basis": "Final dataset state as of the end of 2026-10-07. Multiple findings may apply to one record. Equivalent labels with the same meaning are acceptable.",
+  "payment_cases": [
+    {
+      "record_id": "P001",
+      "expected_findings": [
+        "matched"
+      ],
+      "related_invoice_ids": [
+        "I001"
+      ],
+      "evidence": "Adult invoice is $100; received $100.",
+      "invoice_balance_usd": 0
+    },
+    {
+      "record_id": "P002",
+      "expected_findings": [
+        "overpayment"
+      ],
+      "related_invoice_ids": [
+        "I002"
+      ],
+      "evidence": "Received $120 against a $100 invoice.",
+      "overpayment_usd": 20
+    },
+    {
+      "record_id": "P003",
+      "expected_findings": [
+        "underpayment"
+      ],
+      "related_invoice_ids": [
+        "I003"
+      ],
+      "evidence": "Received $80 against a $100 invoice.",
+      "outstanding_usd": 20
+    },
+    {
+      "record_id": "P004",
+      "expected_findings": [
+        "underpayment",
+        "fee_category_mismatch"
+      ],
+      "related_invoice_ids": [
+        "I004"
+      ],
+      "evidence": "C004 is adult and I004 charges $100, but the payment declares child and pays $50.",
+      "outstanding_usd": 50
+    },
+    {
+      "record_id": "P005",
+      "expected_findings": [
+        "matched_third_party"
+      ],
+      "related_invoice_ids": [
+        "I005"
+      ],
+      "evidence": "Taylor Reed pays $50 for child C005, whose invoice is $50. Parent payment is allowed.",
+      "invoice_balance_usd": 0
+    },
+    {
+      "record_id": "P006",
+      "expected_findings": [
+        "matched"
+      ],
+      "related_invoice_ids": [
+        "I006"
+      ],
+      "evidence": "TX006 is a $100 source transaction covering I006. Its duplicate imported record P007 must not increase paid funds.",
+      "invoice_balance_usd": 0
+    },
+    {
+      "record_id": "P007",
+      "expected_findings": [
+        "duplicate_record"
+      ],
+      "related_invoice_ids": [
+        "I006"
+      ],
+      "evidence": "P006 and P007 have the same transaction_id TX006 and identical source payment details. This is a duplicate import, not a second cash payment.",
+      "duplicate_of": "P006"
+    },
+    {
+      "record_id": "P008",
+      "expected_findings": [
+        "missing_invoice_reference",
+        "inferred_match"
+      ],
+      "related_invoice_ids": [
+        "I007"
+      ],
+      "evidence": "C007 has exactly one invoice I007 for $100. The $100 payment has no invoice reference.",
+      "invoice_balance_usd": 0
+    },
+    {
+      "record_id": "P009",
+      "expected_findings": [
+        "missing_invoice_reference",
+        "ambiguous_match"
+      ],
+      "related_invoice_ids": [
+        "I008",
+        "I009"
+      ],
+      "evidence": "C008 has two $100 invoices; the $100 payment has a generic memo and no reference. Either invoice could match; do not choose arbitrarily.",
+      "requires_review": true
+    },
+    {
+      "record_id": "P010",
+      "expected_findings": [
+        "matched_split_payment"
+      ],
+      "related_invoice_ids": [
+        "I010"
+      ],
+      "evidence": "Distinct transactions TX010 ($40) and TX011 ($60) together cover the $100 invoice by as_of_date.",
+      "related_payment_ids": [
+        "P010",
+        "P011"
+      ],
+      "invoice_balance_usd": 0
+    },
+    {
+      "record_id": "P011",
+      "expected_findings": [
+        "matched_split_payment"
+      ],
+      "related_invoice_ids": [
+        "I010"
+      ],
+      "evidence": "Distinct transactions TX010 ($40) and TX011 ($60) together cover the $100 invoice by as_of_date.",
+      "related_payment_ids": [
+        "P010",
+        "P011"
+      ],
+      "invoice_balance_usd": 0
+    },
+    {
+      "record_id": "P012",
+      "expected_findings": [
+        "matched_third_party"
+      ],
+      "related_invoice_ids": [
+        "I011"
+      ],
+      "evidence": "A sponsor pays the full $50 child invoice for C010. Third-party payment is allowed.",
+      "invoice_balance_usd": 0
+    },
+    {
+      "record_id": "P013",
+      "expected_findings": [
+        "missing_invoice_reference",
+        "inferred_match",
+        "underpayment"
+      ],
+      "related_invoice_ids": [
+        "I013"
+      ],
+      "evidence": "C012 has one $100 invoice, I013. Its $75 payment is inferable under the supplied matching policy, but $25 remains outstanding.",
+      "outstanding_usd": 25
+    },
+    {
+      "record_id": "P014",
+      "expected_findings": [
+        "unknown_customer",
+        "unmatched_payment"
+      ],
+      "related_invoice_ids": [],
+      "evidence": "C999 is absent from the customer registry and no invoice is referenced. The $30 remains unallocated; the data cannot establish why it was sent.",
+      "unallocated_usd": 30,
+      "requires_review": true
+    }
+  ],
+  "invoice_cases": [
+    {
+      "invoice_id": "I012",
+      "expected_findings": [
+        "unpaid_invoice"
+      ],
+      "outstanding_usd": 100,
+      "evidence": "Known customer C011 has a $100 invoice with no payment or candidate payment."
+    },
+    {
+      "invoice_id": "I008",
+      "expected_findings": [
+        "unresolved_allocation"
+      ],
+      "evidence": "P009 might cover I008 or I009; the data does not uniquely determine allocation."
+    },
+    {
+      "invoice_id": "I009",
+      "expected_findings": [
+        "unresolved_allocation"
+      ],
+      "evidence": "P009 might cover I008 or I009; the data does not uniquely determine allocation."
+    }
+  ],
+  "evaluation_notes": [
+    "Check both correct findings and false alarms on valid parent, sponsor, and split payments.",
+    "Check supporting record IDs and arithmetic, not only whether labels match.",
+    "The agent may abstain when evidence is insufficient, as required for P009 and P014.",
+    "This small hand-designed fixture is for learning and debugging, not proof of real-world accuracy or scalability.",
+    "Use fresh unseen synthetic cases for later evaluation; do not train or tune on this answer key and then claim independent test performance."
+  ]
+}

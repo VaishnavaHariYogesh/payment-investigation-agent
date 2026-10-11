@@ -1,0 +1,371 @@
+{
+  "dataset_name": "Synthetic payment investigation starter v1",
+  "synthetic": true,
+  "as_of_date": "2026-10-07",
+  "business": "Fictional community registration program",
+  "policies": {
+    "currency": "USD",
+    "adult_fee_usd": 100,
+    "child_fee_usd": 50,
+    "fee_eligibility": "The beneficiary customer age_group determines the fee, not the payer name or age.",
+    "third_party_payments": "Parents and sponsors may pay for a beneficiary. A different payer name is not a discrepancy by itself.",
+    "payment_category": "Payment fee_category is the category declared with the payment; compare it with the invoice and beneficiary records.",
+    "duplicate_imports": "Repeated transaction_id with identical payment details means the same source transaction was imported twice. Count it once. Conflicting details require review.",
+    "split_payments": "Sum distinct source transactions matched to the same invoice through as_of_date. Assess the final invoice balance, not each installment in isolation.",
+    "missing_invoice_reference": "If a known beneficiary has exactly one invoice in this dataset, identify it as an inferred match and report the missing reference. Multiple candidate invoices require review unless the evidence uniquely identifies one.",
+    "unknown_beneficiary": "Report an unknown customer and unmatched payment when beneficiary_customer_id is absent from customers. This does not establish fraud or absence of a business relationship.",
+    "unpaid_invoices": "Invoices without a payment or an unresolved candidate payment are unpaid at the end of as_of_date. Do not call candidate invoices unpaid while allocation is unresolved.",
+    "scope": "No prior balances, refunds, discounts, processor fees, or currency conversions. All invoices and source payments relevant to this exercise are included."
+  },
+  "customers": [
+    {
+      "customer_id": "C001",
+      "name": "Alex Brooks",
+      "age_group": "adult"
+    },
+    {
+      "customer_id": "C002",
+      "name": "Morgan Lee",
+      "age_group": "adult"
+    },
+    {
+      "customer_id": "C003",
+      "name": "Riley Patel",
+      "age_group": "adult"
+    },
+    {
+      "customer_id": "C004",
+      "name": "Jamie Cruz",
+      "age_group": "adult"
+    },
+    {
+      "customer_id": "C005",
+      "name": "Sam Reed",
+      "age_group": "child"
+    },
+    {
+      "customer_id": "C006",
+      "name": "Avery Cole",
+      "age_group": "adult"
+    },
+    {
+      "customer_id": "C007",
+      "name": "Casey Diaz",
+      "age_group": "adult"
+    },
+    {
+      "customer_id": "C008",
+      "name": "Jordan Kim",
+      "age_group": "adult"
+    },
+    {
+      "customer_id": "C009",
+      "name": "Robin Shah",
+      "age_group": "adult"
+    },
+    {
+      "customer_id": "C010",
+      "name": "Drew Lane",
+      "age_group": "child"
+    },
+    {
+      "customer_id": "C011",
+      "name": "Quinn Ellis",
+      "age_group": "adult"
+    },
+    {
+      "customer_id": "C012",
+      "name": "Sky Davis",
+      "age_group": "adult"
+    }
+  ],
+  "invoices": [
+    {
+      "invoice_id": "I001",
+      "beneficiary_customer_id": "C001",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I002",
+      "beneficiary_customer_id": "C002",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I003",
+      "beneficiary_customer_id": "C003",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I004",
+      "beneficiary_customer_id": "C004",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I005",
+      "beneficiary_customer_id": "C005",
+      "fee_category": "child",
+      "amount_due_usd": 50,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I006",
+      "beneficiary_customer_id": "C006",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I007",
+      "beneficiary_customer_id": "C007",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I008",
+      "beneficiary_customer_id": "C008",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I009",
+      "beneficiary_customer_id": "C008",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I010",
+      "beneficiary_customer_id": "C009",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I011",
+      "beneficiary_customer_id": "C010",
+      "fee_category": "child",
+      "amount_due_usd": 50,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I012",
+      "beneficiary_customer_id": "C011",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    },
+    {
+      "invoice_id": "I013",
+      "beneficiary_customer_id": "C012",
+      "fee_category": "adult",
+      "amount_due_usd": 100,
+      "issued_date": "2026-10-01",
+      "due_date": "2026-10-07",
+      "currency": "USD"
+    }
+  ],
+  "payments": [
+    {
+      "record_id": "P001",
+      "transaction_id": "TX001",
+      "payer_name": "Alex Brooks",
+      "beneficiary_customer_id": "C001",
+      "invoice_reference": "I001",
+      "fee_category": "adult",
+      "amount_usd": 100,
+      "payment_date": "2026-10-02",
+      "memo": "October registration",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P002",
+      "transaction_id": "TX002",
+      "payer_name": "Morgan Lee",
+      "beneficiary_customer_id": "C002",
+      "invoice_reference": "I002",
+      "fee_category": "adult",
+      "amount_usd": 120,
+      "payment_date": "2026-10-02",
+      "memo": "October registration",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P003",
+      "transaction_id": "TX003",
+      "payer_name": "Riley Patel",
+      "beneficiary_customer_id": "C003",
+      "invoice_reference": "I003",
+      "fee_category": "adult",
+      "amount_usd": 80,
+      "payment_date": "2026-10-03",
+      "memo": "October registration",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P004",
+      "transaction_id": "TX004",
+      "payer_name": "Jamie Cruz",
+      "beneficiary_customer_id": "C004",
+      "invoice_reference": "I004",
+      "fee_category": "child",
+      "amount_usd": 50,
+      "payment_date": "2026-10-03",
+      "memo": "Child registration rate",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P005",
+      "transaction_id": "TX005",
+      "payer_name": "Taylor Reed",
+      "beneficiary_customer_id": "C005",
+      "invoice_reference": "I005",
+      "fee_category": "child",
+      "amount_usd": 50,
+      "payment_date": "2026-10-03",
+      "memo": "Registration for my child Sam Reed",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P006",
+      "transaction_id": "TX006",
+      "payer_name": "Avery Cole",
+      "beneficiary_customer_id": "C006",
+      "invoice_reference": "I006",
+      "fee_category": "adult",
+      "amount_usd": 100,
+      "payment_date": "2026-10-04",
+      "memo": "October registration",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P007",
+      "transaction_id": "TX006",
+      "payer_name": "Avery Cole",
+      "beneficiary_customer_id": "C006",
+      "invoice_reference": "I006",
+      "fee_category": "adult",
+      "amount_usd": 100,
+      "payment_date": "2026-10-04",
+      "memo": "October registration",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P008",
+      "transaction_id": "TX008",
+      "payer_name": "Casey Diaz",
+      "beneficiary_customer_id": "C007",
+      "invoice_reference": "",
+      "fee_category": "adult",
+      "amount_usd": 100,
+      "payment_date": "2026-10-04",
+      "memo": "Registration fee",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P009",
+      "transaction_id": "TX009",
+      "payer_name": "Jordan Kim",
+      "beneficiary_customer_id": "C008",
+      "invoice_reference": "",
+      "fee_category": "adult",
+      "amount_usd": 100,
+      "payment_date": "2026-10-04",
+      "memo": "Registration fee",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P010",
+      "transaction_id": "TX010",
+      "payer_name": "Robin Shah",
+      "beneficiary_customer_id": "C009",
+      "invoice_reference": "I010",
+      "fee_category": "adult",
+      "amount_usd": 40,
+      "payment_date": "2026-10-05",
+      "memo": "First installment",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P011",
+      "transaction_id": "TX011",
+      "payer_name": "Robin Shah",
+      "beneficiary_customer_id": "C009",
+      "invoice_reference": "I010",
+      "fee_category": "adult",
+      "amount_usd": 60,
+      "payment_date": "2026-10-06",
+      "memo": "Remaining installment",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P012",
+      "transaction_id": "TX012",
+      "payer_name": "Community Learning Sponsor",
+      "beneficiary_customer_id": "C010",
+      "invoice_reference": "I011",
+      "fee_category": "child",
+      "amount_usd": 50,
+      "payment_date": "2026-10-06",
+      "memo": "Sponsorship for Drew Lane registration",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P013",
+      "transaction_id": "TX013",
+      "payer_name": "Sky Davis",
+      "beneficiary_customer_id": "C012",
+      "invoice_reference": "",
+      "fee_category": "adult",
+      "amount_usd": 75,
+      "payment_date": "2026-10-06",
+      "memo": "Registration payment",
+      "currency": "USD"
+    },
+    {
+      "record_id": "P014",
+      "transaction_id": "TX014",
+      "payer_name": "Leslie Grant",
+      "beneficiary_customer_id": "C999",
+      "invoice_reference": "",
+      "fee_category": "adult",
+      "amount_usd": 30,
+      "payment_date": "2026-10-07",
+      "memo": "Registration payment",
+      "currency": "USD"
+    }
+  ]
+}
