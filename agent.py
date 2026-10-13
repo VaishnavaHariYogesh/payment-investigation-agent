@@ -41,7 +41,6 @@ REPORT_SCHEMA = {
     'additionalProperties': False,
 }
 
-
 def source_ids(result):
     """Identify records actually returned by a tool, for citation checks."""
     found = set()
@@ -60,14 +59,11 @@ def source_ids(result):
                 found.update(source_ids(value))
     return found
 
-
 class LabelPolicyError(ValueError):
     """A report contradicts our finding-label definitions."""
 
-
 class EvidenceCoverageError(ValueError):
     """A final report lacks a required calculation or contradicts its result."""
-
 
 def validate_calculations(report, trace, tools, target_type, target_id):
     """Require invoice-wide payment checks before accepting a final report."""
@@ -110,12 +106,15 @@ def validate_calculations(report, trace, tools, target_type, target_id):
                 'The balance tool identifies the target row as a duplicate imported transaction. '
                 'Report duplicate_record instead of matched and explain the retrieved duplicate evidence.')
 
-
 def validate_report(report, target_type, target_id, seen_sources):
     if not isinstance(report, dict) or set(report) != set(REPORT_SCHEMA['required']):
         raise ValueError('Report fields do not match the required format.')
     if report['target_type'] != target_type or report['target_id'] != target_id:
         raise ValueError('The report identifies a different target.')
+    if target_type == 'payment' and target_id not in report['related_payment_ids']:
+        raise EvidenceCoverageError(
+            'Include the target payment ID in related_payment_ids: ' + target_id
+        )
     if target_id not in seen_sources:
         raise ValueError('The model did not retrieve the requested target.')
     if not report['findings'] or any(f not in FINDINGS for f in report['findings']):
@@ -137,7 +136,6 @@ def validate_report(report, target_type, target_id, seen_sources):
             'do not discard them just to keep matched.')
     # These checks verify shape and retrieved IDs, not whether the model's
     # interpretation is correct. evaluate.py checks it against the fixture.
-
 
 def investigate(client, tools, target_type, target_id, model=DEFAULT_MODEL, verbose=True):
     policies = json.dumps(tools.data['policies'])
@@ -232,7 +230,6 @@ def investigate(client, tools, target_type, target_id, model=DEFAULT_MODEL, verb
                             'output': json.dumps(result)})
     raise RuntimeError('Investigation round limit reached. No final report was saved.')
 
-
 def main():
     parser = argparse.ArgumentParser(description='Investigate one payment or invoice.')
     parser.add_argument('target_id', help='For example P002, or I012 with --invoice')
@@ -268,7 +265,6 @@ def main():
     path.write_text(json.dumps(result, indent=2) + '\n')
     print('\n' + json.dumps(result['report'], indent=2))
     print('\nSaved:', path.name)
-
 
 if __name__ == '__main__':
     main()

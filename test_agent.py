@@ -10,7 +10,6 @@ from agent import investigate
 from evaluate import evaluate
 from tools import PaymentTools
 
-
 def call(name, arguments, call_id):
     return SimpleNamespace(type='function_call', name=name,
                            arguments=json.dumps(arguments), call_id=call_id)
@@ -20,7 +19,6 @@ def response(output=None, report=None, status='completed'):
     return SimpleNamespace(output=output or [], output_text=json.dumps(report) if report else '',
                            status=status, usage=None)
 
-
 def example_report():
     return {'target_type': 'payment', 'target_id': 'P002', 'findings': ['overpayment'],
             'related_payment_ids': ['P002'], 'related_invoice_ids': ['I002'],
@@ -28,7 +26,6 @@ def example_report():
                          {'source_id': 'I002', 'explanation': 'Invoice is $100.'}],
             'explanation': 'Morgan paid $20 more than the invoice amount.',
             'final_balance_usd': -20, 'requires_review': False}
-
 
 class ScriptedClient:
     def __init__(self, scripted_responses):
@@ -40,7 +37,6 @@ class ScriptedClient:
         self.requests.append(copy.deepcopy(request))
         return next(self.script)
 
-
 def happy_script(report=None):
     return [
         response([call('get_payment', {'record_id': 'P002'}, 'call_1')]),
@@ -49,7 +45,6 @@ def happy_script(report=None):
                   call('calculate_balance', {'invoice_id': 'I002'}, 'call_4')]),
         response(report=report or example_report()),
     ]
-
 
 class AgentProtocolTests(unittest.TestCase):
     def test_loop_returns_actual_tool_results_to_client(self):
@@ -92,7 +87,26 @@ class AgentProtocolTests(unittest.TestCase):
         self.assertTrue(evaluate(result, key)['automated_case_check_passed'])
         result['report']['final_balance_usd'] = -999
         self.assertFalse(evaluate(result, key)['automated_case_check_passed'])
+        
+    def test_missing_target_payment_id_is_repaired(self):
+        report = example_report()
+        report['related_payment_ids'] = []
 
+        script = happy_script(report) + [
+            response(report=example_report())
+        ]
+
+        result = investigate(
+            ScriptedClient(script), PaymentTools(),
+            'payment', 'P002', verbose=False
+        )
+
+        self.assertEqual(result['report_repairs'], 1)
+        self.assertIn(
+            'P002', result['report']['related_payment_ids']
+        )
+
+    
 
 if __name__ == '__main__':
     unittest.main()
