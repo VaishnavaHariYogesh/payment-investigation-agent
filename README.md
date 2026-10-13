@@ -186,7 +186,7 @@ python -m unittest test_tools test_agent -v
 ## Future development
 
 - Understand and modify each component while continuing to learn its implementation.
-- Implement `batch.py` myself with guidance to investigate multiple records
+- Implement `batch.py` to investigate multiple records
   and produce a combined summary.
 - Add fresh synthetic cases to check behavior beyond the development examples.
 - Explore a separate decision-support agent that suggests what to do with each
