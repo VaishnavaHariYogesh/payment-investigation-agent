@@ -4,7 +4,6 @@ from pathlib import Path
 
 DATA_PATH = Path(__file__).parent / 'inputs' / 'payment_data.json'
 
-
 class PaymentTools:
     def __init__(self, data=None):
         if data is None:
@@ -119,7 +118,6 @@ class PaymentTools:
         if not isinstance(arguments[key], str) or not arguments[key].strip():
             return {'error': key + ' must be a nonempty string'}
         return getattr(self, name)(arguments[key])
-
 
 TOOL_SPECS = [
     ('get_payment', 'record_id', 'Retrieve one imported payment record by P-prefixed record ID.'),

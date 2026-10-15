@@ -5,7 +5,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent
 
-
 def evaluate(payload, answer_key):
     report = payload['report']
     payment = report['target_type'] == 'payment'
@@ -62,7 +61,6 @@ def evaluate(payload, answer_key):
             'automated_case_check_passed': passed,
             'manual_check': 'Read the explanation and confirm its factual claims against the tool trace. IDs and labels alone do not prove correct reasoning.'}
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('report_path', help='For example reports/P002.json')
@@ -75,7 +73,6 @@ def main():
     print(json.dumps(result, indent=2))
     if not result['automated_case_check_passed']:
         raise SystemExit(1)
-
 
 if __name__ == '__main__':
     main()

@@ -3,7 +3,6 @@ import copy
 import unittest
 from tools import PaymentTools
 
-
 class ToolTests(unittest.TestCase):
     def setUp(self):
         self.tools = PaymentTools()
@@ -68,7 +67,6 @@ class ToolTests(unittest.TestCase):
     def test_invalid_tool_arguments_are_reported(self):
         self.assertIn('error', self.tools.call('get_payment', {'record_id': 5}))
         self.assertIn('error', self.tools.call('delete_payment', {'record_id': 'P002'}))
-
 
 if __name__ == '__main__':
     unittest.main()

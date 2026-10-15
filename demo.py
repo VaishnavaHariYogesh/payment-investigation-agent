@@ -2,7 +2,6 @@
 import json
 from tools import PaymentTools
 
-
 def main():
     tools = PaymentTools()
     payment = tools.get_payment('P002')
@@ -18,7 +17,6 @@ def main():
     print('A negative balance means more money was paid than was owed.')
     print('\nCalculation evidence:')
     print(json.dumps(balance, indent=2))
-
 
 if __name__ == '__main__':
     main()

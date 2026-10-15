@@ -1,3 +1,11 @@
+"""Run investigations for multiple payment or invoice records.
+
+From the project directory, run ``python batch.py P002 P003`` to investigate
+payments, or add ``--invoice`` to investigate invoice IDs. Set
+``OPENAI_API_KEY`` before running; ``OPENAI_MODEL`` optionally selects the
+model.
+"""
+
 import argparse
 from datetime import datetime
 from getpass import getpass
@@ -10,6 +18,11 @@ from agent import investigate, DEFAULT_MODEL
 
 def run_batch(client, tools, target_ids, target_type="payment",
               model=DEFAULT_MODEL):
+    """Investigate each target and return per-target results and totals.
+
+    A failure for one target is recorded in the results and does not stop
+    investigations of later targets.
+    """
     if target_type not in ["payment", "invoice"]:
         raise ValueError("Target type must be payment or invoice.")
 
@@ -60,16 +73,22 @@ def run_batch(client, tools, target_ids, target_type="payment",
     }
 
 def main():
+    """Parse command-line options, run investigations, and save reports."""
     parser = argparse.ArgumentParser(
         description="Investigate multiple payments or invoices."
     )
     parser.add_argument(
-        "target_ids", nargs="+", help="For example P002 P003"
+        "target_ids", nargs="+",
+        help="Payment or invoice IDs to investigate (for example P002 P003)"
     )
-    parser.add_argument("--invoice", action="store_true")
+    parser.add_argument(
+        "--invoice", action="store_true",
+        help="Treat target IDs as invoice IDs instead of payment IDs"
+    )
     parser.add_argument(
         "--model",
-        default=os.environ.get("OPENAI_MODEL", DEFAULT_MODEL)
+        default=os.environ.get("OPENAI_MODEL", DEFAULT_MODEL),
+        help="Model to use (default: OPENAI_MODEL or %(default)s)"
     )
     args = parser.parse_args()
 
